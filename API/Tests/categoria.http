@@ -8,3 +8,6 @@ Content-Type: application/json
 {
     "nome": "Pessoal"
 }
+
+### Buscar uma categoria
+GET http://localhost:5000/categoria/buscar/bfe4e7dc-81e4-4e47-a67b-d4fbf3e124bd

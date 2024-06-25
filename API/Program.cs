@@ -87,14 +87,12 @@ app.MapPut("/tarefas/alterar/{id}", ([FromServices] AppDataContext ctx, [FromRou
 });
 
 //GET: http://localhost:5000/tarefas/naoconcluidas
-app.MapGet("/tarefas/naoconcluidas", ([FromServices] AppDataContext ctx ) =>
+app.MapGet("/tarefas/naoconcluidas", ([FromServices] AppDataContext ctx) =>
 {
 
-    Tarefa? tarefa = ctx.Tarefas.ToList().Find(x => x.Status != "Concluída");
-
-    if (tarefa is not null)
+    if (ctx.Tarefas.Any())
     {
-        return Results.Ok(tarefa);
+        return Results.Ok(ctx.Tarefas.Where(x => x.Status != "Concluída").ToList());
     }
     return Results.NotFound("Nenhuma tarefa encontrada");
 });
@@ -102,21 +100,17 @@ app.MapGet("/tarefas/naoconcluidas", ([FromServices] AppDataContext ctx ) =>
 //GET: http://localhost:5000/tarefas/concluidas
 app.MapGet("/tarefas/concluidas", ([FromServices] AppDataContext ctx) =>
 {
-    Tarefa? tarefa = ctx.Tarefas.ToList().Find(x => x.Status == "Concluída");
-
-    if (tarefa is not null)
+    if (ctx.Tarefas.Any())
     {
-        return Results.Ok(tarefa);
+        return Results.Ok(ctx.Tarefas.Where(x => x.Status == "Concluída").ToList());
     }
     return Results.NotFound("Nenhuma tarefa encontrada");
 });
 
-
-//GET  http://localhost:{porta}/tarefas/buscar{product.id}
-app.MapGet("/tarefas/buscar/{id}", ([FromRoute] string id, [FromServices] AppDataContext context) =>
+app.MapGet("/tarefas/buscar/{id}", ([FromRoute] string id, [FromServices] AppDataContext ctx) =>
 {
     //Endpoint com várias linhas de código 
-    Tarefa? tarefa = context.Tarefas.FirstOrDefault(x => x.TarefaId == id);
+    Tarefa? tarefa = ctx.Tarefas.FirstOrDefault(x => x.TarefaId == id);
 
     if (tarefa is null) return Results.NotFound("Tarefa não Encotrada");
     return Results.Ok(tarefa);
